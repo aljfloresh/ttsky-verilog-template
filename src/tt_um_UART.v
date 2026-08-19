@@ -67,7 +67,7 @@ module tt_um_UART (
         .count      (count),
         .user_in    (internal_data),
         .rx_trigger (fir_input_valid),
-        .final      (final_data),
+        .final_out      (final_data),
         .trigger    (fir_trigger),
         .clk        (clk),
         .rst_n      (rst_n)
