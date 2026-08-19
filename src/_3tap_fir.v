@@ -5,7 +5,7 @@ module _3tap_fir (
     input  wire [3:0] count,
     input  wire [7:0] user_in,
     input  wire       rx_trigger,
-    output reg  [7:0] final_out,
+    output reg  [7:0] final,
     output reg        trigger,
     input  wire       clk,
     input  wire       rst_n
@@ -46,7 +46,7 @@ module _3tap_fir (
             coefficient1 <= 8'd0;
             coefficient2 <= 8'd0;
 
-            final_out        <= 8'd0;
+            final        <= 8'd0;
             trigger      <= 1'b0;
             calc_pending <= 1'b0;
         end
@@ -63,13 +63,7 @@ module _3tap_fir (
                     4'd5: coefficient1 <= user_in;
                     4'd6: begin
                         coefficient2 <= user_in;
-
-                        if (fir_sum > 20'd255)
-                            final_out <= 8'd255;
-                        else
-                            final_out <= fir_sum[7:0];
-
-                        trigger <= 1'b1;
+                        calc_pending <= 1'b1; 
                     end
                     default: ;
                 endcase
@@ -80,9 +74,9 @@ module _3tap_fir (
                 calc_pending <= 1'b0;
                 
                 if (fir_sum > 20'd255)
-                    final_out <= 8'd255;
+                    final <= 8'd255;
                 else
-                    final_out <= fir_sum[7:0];
+                    final <= fir_sum[7:0];
                     
                 trigger <= 1'b1; 
             end
