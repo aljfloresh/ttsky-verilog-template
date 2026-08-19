@@ -46,7 +46,7 @@ module _3tap_fir (
             coefficient1 <= 8'd0;
             coefficient2 <= 8'd0;
 
-            final        <= 8'd0;
+            final_out    <= 8'd0;
             trigger      <= 1'b0;
             calc_pending <= 1'b0;
         end
@@ -74,9 +74,9 @@ module _3tap_fir (
                 calc_pending <= 1'b0;
                 
                 if (fir_sum > 20'd255)
-                    final <= 8'd255;
+                    final_out <= 8'd255;
                 else
-                    final <= fir_sum[7:0];
+                    final_out <= fir_sum[7:0];
                     
                 trigger <= 1'b1; 
             end
