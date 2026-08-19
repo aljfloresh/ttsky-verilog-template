@@ -12,7 +12,7 @@ module tt_um_UART (
     input  wire       rst_n
 );
 
-    localparam integer CLOCK_HZ  = 100_000_000;
+    localparam integer CLOCK_HZ  = 66_000_000;
     localparam integer BAUD_RATE = 9600;
 
     wire       rx_trigger;
