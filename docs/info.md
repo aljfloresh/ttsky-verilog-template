@@ -42,11 +42,12 @@ You can use HTerm or another serial terminal program capable of sending 8-bit va
 
    Each value must be between 0 and 255.
 
-<img width="986" height="399" alt="Screenshot 2026-08-19 125026" src="https://github.com/user-attachments/assets/fb258809-8adc-4876-b350-b9e1363b1a97" />
-
 <img width="978" height="216" alt="Screenshot 2026-08-19 125017" src="https://github.com/user-attachments/assets/4799122b-89a3-42b6-9aea-4fc4a4739dc0" />
 
 8. After the six values are received, the FIR filter calculates the result and transmits it through UART. The result will appear in the terminal's received data section.
+
+
+<img width="986" height="399" alt="Screenshot 2026-08-19 125026" src="https://github.com/user-attachments/assets/fb258809-8adc-4876-b350-b9e1363b1a97" />
 
 
 ### Using a Microcontroller
