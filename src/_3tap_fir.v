@@ -5,7 +5,7 @@ module _3tap_fir (
     input  wire [3:0] count,
     input  wire [7:0] user_in,
     input  wire       rx_trigger,
-    output reg  [7:0] final,
+    output reg  [7:0] final_out,
     output reg        trigger,
     input  wire       clk,
     input  wire       rst_n
