@@ -1,42 +1,79 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
-# Tiny Tapeout Verilog Project Template
+# UART 3-Tap FIR Filter for Tiny Tapeout
 
-- [Read the documentation for project](docs/info.md)
+A Verilog implementation of a **3-tap Finite Impulse Response (FIR) filter with UART communication**, designed for the Tiny Tapeout platform.
 
-## What is Tiny Tapeout?
+- [Project documentation and testing instructions](docs/info.md)
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+## Project Overview
 
-To learn more and get started, visit https://tinytapeout.com.
+The design receives three 8-bit samples followed by three 8-bit coefficients through UART at **9600 baud**.
 
-## Set up your Verilog project
+The values are received in the following order:
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+`Sample0 Sample1 Sample2 Coefficient0 Coefficient1 Coefficient2`
 
-The GitHub action will automatically build the ASIC files using [LibreLane](https://www.zerotoasiccourse.com/terminology/librelane/).
+The FIR filter calculates:
 
-## Enable GitHub actions to build the results page
+`Output = (Sample0 × Coefficient0) + (Sample1 × Coefficient1) + (Sample2 × Coefficient2)`
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+The result is limited to an 8-bit value. Results greater than 255 are saturated to **255** and transmitted back through UART.
 
-## Resources
+## Design Architecture
 
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
+The project consists of five main Verilog modules:
 
-## What next?
+- `tt_um_UART.v` — Tiny Tapeout top-level module
+- `UART_RX.v` — UART receiver
+- `input_counter.v` — Tracks the six received input values
+- `_3tap_fir.v` — Performs the FIR calculation
+- `UART_TX.v` — Transmits the calculated result
 
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
-  - Bluesky [@tinytapeout.com](https://bsky.app/profile/tinytapeout.com)
+Data flow:
+
+`UART RX → Input Counter → 3-Tap FIR → UART TX`
+
+## Tiny Tapeout Interface
+
+| Pin | Function |
+|---|---|
+| `ui[0]` | UART RX |
+| `uo[0]` | UART TX |
+
+The design uses a **66 MHz clock** and UART communication at **9600 baud**.
+
+## Testing
+
+The design can communicate with:
+
+- A computer using a UART-to-USB adapter and serial terminal such as HTerm
+- A microcontroller with UART support
+
+UART configuration:
+
+- Baud rate: **9600**
+- Data bits: **8**
+- Stop bits: **1**
+- Parity: **None**
+
+Detailed connection diagrams, testing instructions, and examples are available in [docs/info.md](docs/info.md).
+
+## Project Structure
+
+```text
+src/
+├── tt_um_UART.v
+├── UART_RX.v
+├── UART_TX.v
+├── input_counter.v
+└── _3tap_fir.v
+
+test/
+├── test.py
+└── tb.v
+
+docs/
+└── info.md
+
+info.yaml
